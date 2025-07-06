@@ -1,6 +1,6 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from utils import ask_file_name_and_write
+# from utils import ask_file_name_and_write
 
 # 🔒 Путь к JSON-файлу сервисного аккаунта
 SERVICE_ACCOUNT_FILE = 'credentials.json'

@@ -63,3 +63,34 @@ def find_fields_for_fulfillment(doc):
     model_response = llm_w_structured_output_for_g_doc.invoke(prompt)
     
     return model_response
+
+class ResponsoForFulfillFields(BaseModel):
+    fulfilled_fields: str = Field(description="Список полів, які були заповнені у форматі масиву строк 'путь.до.поля': 'значення'")
+    missing_fields: str = Field(description="Список полів, які не були заповнені через відсутність даних у JSON")
+    comments: str = Field(description="Коментарі до заповнення полів")
+    
+def fulfill_fields_with_json(fields, json):
+    prompt = f"""Ти досвідчений експерт по заповненню різного роду документів.
+    Ти отримуєш список полів, які потребують заповнення та JSON, який містить інформацію для заповнення цих полів. Не вся потрібна інформація може бути знайдена в JSON
+    Твоя задача заповнити список полів, які потребують заповнення, інформацією з JSON.
+    1.Поверни список полів, які були заповнені у полі fulfilled_fields у форматі:
+    {{
+        "путь.до.поля1": "значення",
+        "путь.до.поля2": "значення",
+        ...
+    }}
+    2.Поверни список полів, які не були заповнені через відсутність даних у JSON у полі missing_fields у форматі:
+    ["путь.до.поля1": "опис очікуванного значення", "путь.до.поля2": "опис очікуванного значення", ...]
+    3. Додай короткі коментарі до заповнення полів у полі comments якщо необхідно.
+    Формат відповіді має відповідати зазначеній структурі.
+    Список полів для заповнення:
+    {fields}
+    Дані для заповнення:
+    {json}
+    """
+    
+    llm_for_fulfill_fields = llm.with_structured_output(ResponsoForFulfillFields)
+    
+    model_response = llm_for_fulfill_fields.invoke(prompt)
+    return model_response
+    

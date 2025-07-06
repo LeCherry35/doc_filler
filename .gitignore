@@ -5,3 +5,4 @@ output
 prev
 .env
 credentials.json
+model.py
