@@ -6,3 +6,5 @@ prev
 .env
 credentials.json
 model.py
+ai_legacy
+client_secret.json

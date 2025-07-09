@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documents filler</title>
+</head>
+
+<body>
+    <!-- <h1>Documets filler</h1> -->
+    <!-- <form id="docs-form"> -->
+    <div>
+        <h3>Введіть номер закупівлі</h3>
+        <input type="text" name="json_id" id="json_id" placeholder="Enter JSON ID" />
+        <button type="button" id="load-json">Завантажити</button>
+        <h3>Дані для заповнення</h3>
+        <span>Замовник</span><input type="text" name="legal_name" id="legal_name" placeholder="Enter Legal Name" /></br>
+        <span>Населений пункт</span><input type="text" name="locality" id="locality"
+            placeholder="Enter locality" /></br>
+        <span>Предмет закупівлі</span><input type="text" name="subject" id="subject" placeholder="Enter subject" /></br>
+        <span>Код ДК</span><input type="text" name="dk_id" id="dk_id" placeholder="Enter dk id" /></br>
+        <span>Уповноважена особа</span><input type="text" name="authorized_person" id="authorized_person"
+            placeholder="Enter authorized person`s name" /></br>
+        <span>Дата</span><input type="text" name="date" id="date" placeholder="Enter date" /></br>
+
+    </div>
+    <div>
+        <h3>Оберіть документи для заповнення</h3>
+        <label>
+            <!-- <input type="checkbox" name="options" value="Doc1"> -->
+            <button id="d1">Завантажити заповнений</button>
+            <a href="https://docs.google.com/document/d/1UIPymd5qjzs_Xwcyo_A3nf8nYCdTrH7CUl3qyU219xA/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про затвердження Річного плану</a></label><br>
+        <label>
+            <!-- <input type="checkbox" name="options" value="Doc2">  -->
+            <button id="d2">Завантажити заповнений</button>
+            <a href="https://docs.google.com/document/d/1PwVyXxfYoWaG8ax5eueTWYHYdyTRyO7Db1mzDUGOKt8/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про початок відкритих торгів та затвердження тендерної
+                документації</a></label><br>
+        <label>
+            <!-- <input type="checkbox" name="options" value="Doc3">  -->
+            <button id="d3">Завантажити заповнений</button>
+            <a href="https://docs.google.com/document/d/1Rwm6E3E-3aMjwbTC4aInS62ERWA5q_drRuAsr09TrIY/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про надання роз'яснень до тендерної
+                документації</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc4" disabled> <a
+                href="https://docs.google.com/document/d/1XNNY4TsLV9-jIbMWVyZjOuHPC9qT8Q19ugHIko9tScA/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про надання роз'яснень щодо усунення
+                порушення</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc5" disabled><a
+                href="https://docs.google.com/document/d/1Y6fgBY5xBkyVkGyui9QFlIVS8h5jrmFCdhe_Kv7PrJo/edit?usp=sharing"
+                target="_blank">Протокол&nbsp;Уповноваженої особи про внесення змін до тендерної
+                документації</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc6" disabled> <a
+                href="https://docs.google.com/document/d/1k5kzJWNOqCOAyKhTVm795ED8ECgeYE-fYl49AQ8saSo/edit?usp=sharing"
+                target="_blank">Протокол&nbsp; Уповноваженої особи про продовження строку розгляду тендерної
+                пропозиції</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc7" disabled> <a
+                href="https://docs.google.com/document/d/1r_0fh9rOZ7mPdkW-FbqNjRNny2R_f5ktwoxBOon8PGc/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про виправлення помилок 24 години</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc8" disabled> <a
+                href="https://docs.google.com/document/d/1mHeROK02JhqicMQKXmooxQbFQqwyb4Zrmqtw0v-Ir3k/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про відхилення тендерної пропозиції
+                учасника</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc9" disabled> <a
+                href="https://docs.google.com/document/d/1qnLPSCqWzuu10sVQfPqutSXYXhweg_O2-4PhfYQLZcE/edit?usp=sharing"
+                target="_blank">Протокол Уповноваженої особи про надання відповіді про причини відхилення тендерної
+                пропозиції учасника</a></label><br>
+        <label><input type="checkbox" name="options" value="Doc10" disabled> <a
+                href="https://docs.google.com/document/d/1T043w4EzQ4YscJAXIWQtyyWCYJa3C_SjdTh0GBs9aAE/edit?usp=sharing"
+                target="_blank">Протокол&nbsp; Уповноваженої особи про відхилення тендерної пропозиції
+                переможця</a></label><br>
+    </div>
+    <br>
+    <!-- <button type="submit">Заповнити обрані</button> -->
+    <!-- </form> -->
+
+    <script>
+        document.getElementById('load-json').addEventListener('click', async function () {
+            const jsonId = document.getElementById('json_id').value;
+            if (!jsonId) {
+                alert('Введіть ID JSON.');
+                return;
+            }
+
+            try {
+                console.log('Завантаження JSON с ID:', jsonId);
+                const response = await fetch(`/get-json-data/${jsonId}`);
+                if (!response.ok) {
+                    throw new Error(`Помилка: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('JSON дані:', data);
+
+                document.getElementById('legal_name').value = data.legal_name || '';
+                document.getElementById('locality').value = data.locality || '';
+                document.getElementById('subject').value = data.subject_description || '';
+                document.getElementById('dk_id').value = data.dk_id || '';
+                document.getElementById('authorized_person').value = data.authorized_person || '';
+                document.getElementById('date').value = data.protocol_date || '';
+
+            } catch (err) {
+                console.error('Ошибка при загрузке JSON:', err);
+            }
+        });
+        // document.getElementById('docs-form').addEventListener('submit', async function (e) {
+        //     e.preventDefault();
+
+        //     const selectedDocs = Array.from(document.querySelectorAll('input[name="options"]:checked'))
+        //         .map(cb => cb.value);
+        //     const jsonId = document.getElementById('json_id').value;
+
+        //     if (selectedDocs.length === 0) {
+        //         alert('Пожалуйста, выберите хотя бы один документ для заполнения.');
+        //         return;
+        //     }
+
+        //     const userData = {
+        //         legal_name: document.getElementById('legal_name').value || "___________________",
+        //         locality: document.getElementById('locality').value || "______",
+        //         subject_description: document.getElementById('subject').value || "__________________",
+        //         dk_id: document.getElementById('dk_id').value || "______",
+        //         authorized_person: document.getElementById('authorized_person').value || "____________________",
+        //         protocol_date: document.getElementById('date').value || "______",
+        //         protocol_number: "______"
+        //     };
+        //     const data = {
+        //         user_data: userData,
+        //         selected_docs: selectedDocs
+        //     };
+        //     try {
+        //         const response = await fetch('/fill-docs', {
+
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({ ...data })
+        //         });
+
+        //         // if (!response.ok) {
+        //         //     throw new Error(`Ошибка: ${response.status}`);
+        //         // }
+
+        //         // const result = await response.json();
+        //         // console.log('Успешно отправлено:', result);
+        //         if (!response.ok) {
+        //             alert("Ошибка генерации PDF");
+        //             return;
+        //         }
+
+        //         const blob = await response.blob();
+        //         const url = window.URL.createObjectURL(blob);
+        //         const link = document.createElement('a');
+        //         link.href = url;
+        //         link.download = 'заполненный_документ.pdf';
+        //         link.click();
+        //         window.URL.revokeObjectURL(url);
+        //     } catch (err) {
+        //         console.error('Ошибка при отправке:', err);
+        //     }
+        // });
+        console.log(document.querySelectorAll('button[id^="d"]'));
+        console.log("ff");
+
+
+        document.querySelectorAll('button[id^="d"]').forEach(button => {
+            button.addEventListener("click", async function (e) {
+                const userData = {
+                    legal_name: document.getElementById('legal_name').value || "___________________",
+                    locality: document.getElementById('locality').value || "______",
+                    subject_description: document.getElementById('subject').value || "__________________",
+                    dk_id: document.getElementById('dk_id').value || "______",
+                    authorized_person: document.getElementById('authorized_person').value || "____________________",
+                    protocol_date: document.getElementById('date').value || "______",
+                    protocol_number: "______"
+                };
+
+                data = {
+                    user_data: userData,
+                    document: button.id
+                }
+                try {
+                    const response = await fetch('/fill-docs', {
+
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ...data })
+                    });
+                    if (!response.ok) {
+                        alert("Ошибка генерации PDF");
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${button.id}.pdf`;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                } catch (err) {
+                    console.error('Помилка при заповненні:', err);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
