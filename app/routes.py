@@ -1,5 +1,5 @@
 import io
-from flask import Blueprint, render_template, request, jsonify, send_file, make_response
+from flask import Blueprint, render_template, request, jsonify, send_file
 
 from app.services.document_filler import DocumentFillerService
 from app.services.google_api import get_drive_quota
@@ -19,16 +19,25 @@ def fill_docs():
     print(f"Selected documents: {selected_docs}")
     user_data = data.get('user_data')
     doc_id = data.get('document')
-    
+    format = data.get('format')
     res = document_filler_service.fill_html_template(html_path = f"app/protocols/{doc_id}.html", values = user_data)
-    
-    pdf_bytes = document_filler_service.html_to_pdf_bytes(res)
-    return send_file(
-        io.BytesIO(pdf_bytes),
-        mimetype='application/pdf',
-        as_attachment=True,
-        download_name='document.pdf'
-    )
+    if (format == "pdf"):
+        
+        pdf_bytes = document_filler_service.html_to_pdf_bytes(res)
+        return send_file(
+            io.BytesIO(pdf_bytes),
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name='document.pdf'
+        )
+    if (format == "doc"):
+        doc_bytes = res.encode('utf-8')
+        return send_file(
+            io.BytesIO(doc_bytes),
+            mimetype='application/msword',
+            as_attachment=True,
+            download_name='document.doc'
+        )
     
 @main.route('/get-json-data/<json_id>', methods=['GET'])
 def get_json_data(json_id):

@@ -29,27 +29,32 @@
         <h3>Оберіть документи для заповнення</h3>
         <label>
             <!-- <input type="checkbox" name="options" value="Doc1"> -->
-            <button id="d1">Завантажити заповнений</button>
+            <button id="d1">Завантажити заповнений <span class="format">PDF</span></button>
             <a href="https://docs.google.com/document/d/1UIPymd5qjzs_Xwcyo_A3nf8nYCdTrH7CUl3qyU219xA/edit?usp=sharing"
                 target="_blank">Протокол Уповноваженої особи про затвердження Річного плану</a></label><br>
         <label>
             <!-- <input type="checkbox" name="options" value="Doc2">  -->
-            <button id="d2">Завантажити заповнений</button>
+            <button id="d2">Завантажити заповнений <span class="format">PDF</span></button>
             <a href="https://docs.google.com/document/d/1PwVyXxfYoWaG8ax5eueTWYHYdyTRyO7Db1mzDUGOKt8/edit?usp=sharing"
                 target="_blank">Протокол Уповноваженої особи про початок відкритих торгів та затвердження тендерної
                 документації</a></label><br>
         <label>
             <!-- <input type="checkbox" name="options" value="Doc3">  -->
-            <button id="d3">Завантажити заповнений</button>
+            <button id="d3">Завантажити заповнений <span class="format">PDF</span></button>
             <a href="https://docs.google.com/document/d/1Rwm6E3E-3aMjwbTC4aInS62ERWA5q_drRuAsr09TrIY/edit?usp=sharing"
                 target="_blank">Протокол Уповноваженої особи про надання роз'яснень до тендерної
                 документації</a></label><br>
-        <label><input type="checkbox" name="options" value="Doc4" disabled> <a
-                href="https://docs.google.com/document/d/1XNNY4TsLV9-jIbMWVyZjOuHPC9qT8Q19ugHIko9tScA/edit?usp=sharing"
+        <label>
+            <!-- <input type="checkbox" name="options" value="Doc4" disabled>  -->
+            <button id="d4">Завантажити заповнений <span class="format">PDF</span></button>
+            <a href="https://docs.google.com/document/d/1XNNY4TsLV9-jIbMWVyZjOuHPC9qT8Q19ugHIko9tScA/edit?usp=sharing"
                 target="_blank">Протокол Уповноваженої особи про надання роз'яснень щодо усунення
                 порушення</a></label><br>
-        <label><input type="checkbox" name="options" value="Doc5" disabled><a
-                href="https://docs.google.com/document/d/1Y6fgBY5xBkyVkGyui9QFlIVS8h5jrmFCdhe_Kv7PrJo/edit?usp=sharing"
+        <label>
+            <!-- <input type="checkbox" name="options" value="Doc5" disabled> -->
+            <button id="d5">Завантажити заповнений <span class="format">PDF</span></button>
+
+            <a href="https://docs.google.com/document/d/1Y6fgBY5xBkyVkGyui9QFlIVS8h5jrmFCdhe_Kv7PrJo/edit?usp=sharing"
                 target="_blank">Протокол&nbsp;Уповноваженої особи про внесення змін до тендерної
                 документації</a></label><br>
         <label><input type="checkbox" name="options" value="Doc6" disabled> <a
@@ -73,10 +78,15 @@
                 переможця</a></label><br>
     </div>
     <br>
+    <select id="format-form">
+        <option value="pdf">PDF</option>
+        <option value="doc">DOC</option>
+    </select>
     <!-- <button type="submit">Заповнити обрані</button> -->
     <!-- </form> -->
 
     <script>
+        let format = "pdf"
         document.getElementById('load-json').addEventListener('click', async function () {
             const jsonId = document.getElementById('json_id').value;
             if (!jsonId) {
@@ -104,6 +114,72 @@
                 console.error('Ошибка при загрузке JSON:', err);
             }
         });
+
+        document.querySelectorAll('button[id^="d"]').forEach(button => {
+            button.addEventListener("click", async function (e) {
+                const userData = {
+                    legal_name: document.getElementById('legal_name').value || "___________________",
+                    locality: document.getElementById('locality').value || "______",
+                    subject_description: document.getElementById('subject').value || "__________________",
+                    dk_id: document.getElementById('dk_id').value || "______",
+                    authorized_person: document.getElementById('authorized_person').value || "____________________",
+                    protocol_date: document.getElementById('date').value || "______",
+                    protocol_number: "______"
+                };
+
+                data = {
+                    format,
+                    user_data: userData,
+                    document: button.id
+                }
+                try {
+                    const response = await fetch('/fill-docs', {
+
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ...data })
+                    });
+                    if (!response.ok) {
+                        alert("Ошибка генерации PDF");
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${button.id}.${format}`;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                } catch (err) {
+                    console.error('Помилка при заповненні:', err);
+                }
+            });
+        });
+
+        
+        document.getElementById("format-form").addEventListener("change", (e) => {
+            format = e.target.value
+
+            switch (format) {
+                case "pdf":
+
+                    document.querySelectorAll('.format').forEach(el => {
+                        el.textContent = 'PDF';
+                    });
+                    break
+                case "doc":
+                    document.querySelectorAll('.format').forEach(el => {
+                        el.textContent = 'DOC';
+                    });
+                    break
+
+            }
+        })
+
         // document.getElementById('docs-form').addEventListener('submit', async function (e) {
         //     e.preventDefault();
 
@@ -161,52 +237,8 @@
         //         console.error('Ошибка при отправке:', err);
         //     }
         // });
-        console.log(document.querySelectorAll('button[id^="d"]'));
-        console.log("ff");
 
 
-        document.querySelectorAll('button[id^="d"]').forEach(button => {
-            button.addEventListener("click", async function (e) {
-                const userData = {
-                    legal_name: document.getElementById('legal_name').value || "___________________",
-                    locality: document.getElementById('locality').value || "______",
-                    subject_description: document.getElementById('subject').value || "__________________",
-                    dk_id: document.getElementById('dk_id').value || "______",
-                    authorized_person: document.getElementById('authorized_person').value || "____________________",
-                    protocol_date: document.getElementById('date').value || "______",
-                    protocol_number: "______"
-                };
-
-                data = {
-                    user_data: userData,
-                    document: button.id
-                }
-                try {
-                    const response = await fetch('/fill-docs', {
-
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ ...data })
-                    });
-                    if (!response.ok) {
-                        alert("Ошибка генерации PDF");
-                        return;
-                    }
-
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `${button.id}.pdf`;
-                    link.click();
-                    window.URL.revokeObjectURL(url);
-                } catch (err) {
-                    console.error('Помилка при заповненні:', err);
-                }
-            });
-        });
     </script>
 </body>
 
